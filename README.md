@@ -12,10 +12,12 @@
 
 
 ***
-## User Registration, User Login and Authorization process.
 
-# Authentication flow
-![login_flow](login_flow.png)
+## Login flow
+![login_flow](login_flow.jpeg)
+
+## Authentication flow
+![authentication_flow2](authentication_flow2.png)
 ## Core Code
 
 1. `JWTUtil`
