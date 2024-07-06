@@ -48,7 +48,7 @@ spring.security.jwt.expirationMs=60000
 
 ```
 ## Run following SQL insert statements
-All users registered via the registration endpoint are assigned the 'user' role by default. To assign admin privileges, please manually insert the admin credentials into the register table.<b>Password - BCryptEncoded</b>Eg:
+All users registered via the registration endpoint are assigned the 'user' role by default. To assign admin privileges, please manually insert the admin credentials into the register table.<b>Password - BCryptEncoded</b>
 ```
 INSERT INTO register (reg_id,email, first_name, last_name , password , role)
 VALUES (1,'admin@gmail.com', 'admin','A','$2a$10$uBwznt.UGsEY1zahgdYyguDSIyME085OT15fjTz5I4HYtPwmPokEO','ADMIN');
@@ -115,7 +115,7 @@ $ GET http://localhost:8080/admin/emplist -H 'Authorization: Bearer <JWT_TOKEN>'
 
 10. And that's it, congrats! You should get a similar response to this one, meaning that you're now authenticated
 
-```javascript
+```json
 {
     "empId": 1,
     "empName": "Michael Johnson",
@@ -128,3 +128,9 @@ $ GET http://localhost:8080/admin/emplist -H 'Authorization: Bearer <JWT_TOKEN>'
     "joinDate": "2020-12-01T00:00:00.000+00:00"
 }
 
+```
+## Demo Video
+
+Check out my [LinkedIn profile](https://www.linkedin.com/in/madhumiga-vijayakumar-b51aa4255/) for a demo video of this project.
+
+Happy Coding!😊👨‍💻👩‍💻
