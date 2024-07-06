@@ -12,29 +12,67 @@
 
 
 ***
+## User Registration, User Login and Authorization process.
 
+# Authentication flow
+![login_flow](login_flow.png)
 ## Core Code
 
-1. `JwtTokenFilter`
-2. `JwtTokenFilterConfigurer`
-3. `JwtTokenProvider`
-4. `MyUserDetails`
-5. `WebSecurityConfig`
+1. `JWTUtil`
+2. `JWTAuthFilter`
+3. `JWTAuthEntryPoint`
+4. `CustomUserDetailsService`
+5. `SecurityConfig`
+   
+## Configure Spring Datasource, JPA, App properties
+Open `src/main/resources/application.properties`
 
-# How to use this code?
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/testdb?createDatabaseIfNotExist=true
+spring.datasource.username= your_username
+spring.datasource.password= your_password
 
-1. Make sure you have [Java 8](https://www.java.com/download/) and [Maven](https://maven.apache.org) installed
+#properties for MySQL
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.format_sql=true
+
+#JWT Token
+#base64(256 bits)
+spring.security.jwt.secret=6k9YeP6LdZf27PaMM2PGRbM11XqAfQsHcFQt2uLAV/U=
+#1min
+spring.security.jwt.expirationMs=60000
+
+
+```
+## Run following SQL insert statements
+All users registered via the registration endpoint are assigned the 'user' role by default. To assign admin privileges, please manually insert the admin credentials into the register table.<b>Password - BCryptEncoded</b>Eg:
+```
+INSERT INTO register (reg_id,email, first_name, last_name , password , role)
+VALUES (1,'admin@gmail.com', 'admin','A','$2a$10$uBwznt.UGsEY1zahgdYyguDSIyME085OT15fjTz5I4HYtPwmPokEO','ADMIN');
+```
+Ensure that the employee table contains data to retrieve information when accessing the /admin/emplist endpoint. You can also use Postman to insert data.
+```
+INSERT INTO employee (empId, empName, dept, gmail, phno, dob, gender, salary, joinDate) VALUES 
+(1, 'Michael Johnson', 'Sales', 'michael.johnson@gmail.com', '8786543210', '1988-11-11', 'male', 80000, '2020-12-01');
+
+```
+
+## How to use this code?
+
+
+1. Make sure you have [Java 17 or 21](https://www.java.com/download/) and [Maven](https://maven.apache.org) installed
 
 2. Fork this repository and clone it
   
 ```
-$ git clone https://github.com/<your-user>/spring-boot-jwt
+$ git clone https://github.com/<your-user>/SpringSecurity6-JWT_RBAC-MYSqlConnection
 ```
 
 3. Navigate into the folder  
 
 ```
-$ cd spring-boot-jwt
+$ cd SpringSecurity6-JWT_RBAC-MYSqlConnection
 ```
 
 4. Install dependencies
@@ -49,39 +87,42 @@ $ mvn install
 $ mvn spring-boot:run
 ```
 
-6. Navigate to `http://localhost:8080/swagger-ui.html` in your browser to check everything is working correctly. You can change the default port in the `application.yml` file
+6. Open Postman
 
-```yml
-server:
-  port: 8080
-```
+7. Make a GET request to `/admin/emplist` to check you're not authenticated. You should receive a response with a `401` with an `Unauthorized` message since you haven't set your valid JWT token yet
 
-7. Make a GET request to `/users/me` to check you're not authenticated. You should receive a response with a `403` with an `Access Denied` message since you haven't set your valid JWT token yet
 
-```
-$ curl -X GET http://localhost:8080/users/me
-```
 
-8. Make a POST request to `/users/signin` with the default admin user we programatically created to get a valid JWT token
+8. Make a POST request to `/signin` with the default admin user we programatically created to get a valid JWT token
 
 ```
-$ curl -X POST 'http://localhost:8080/users/signin?username=admin&password=admin'
+$  POST 'http://localhost:8080/signin
+
+#with body
+{
+    "username":"admin@gmail.com",
+    "password":"admin@123"
+}
 ```
 
-9. Add the JWT token as a Header parameter and make the initial GET request to `/users/me` again
+9. Add the JWT token as a Header parameter and make the initial GET request to `/admin/emplist` again
 
 ```
-$ curl -X GET http://localhost:8080/users/me -H 'Authorization: Bearer <JWT_TOKEN>'
+$ GET http://localhost:8080/admin/emplist -H 'Authorization: Bearer <JWT_TOKEN>'
 ```
 
 10. And that's it, congrats! You should get a similar response to this one, meaning that you're now authenticated
 
 ```javascript
 {
-  "id": 1,
-  "username": "admin",
-  "email": "admin@email.com",
-  "roles": [
-    "ROLE_ADMIN"
-  ]
+    "empId": 1,
+    "empName": "Michael Johnson",
+    "dept": "Sales",
+    "gmail": "michael.johnson@gmail.com",
+    "phno": "8786543210",
+    "dob": "1988-11-11T00:00:00.000+00:00",
+    "gender": "male",
+    "salary": 80000,
+    "joinDate": "2020-12-01T00:00:00.000+00:00"
 }
+
