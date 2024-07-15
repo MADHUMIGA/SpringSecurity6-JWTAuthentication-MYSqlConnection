@@ -131,6 +131,6 @@ $ GET http://localhost:8080/admin/emplist -H 'Authorization: Bearer <JWT_TOKEN>'
 ```
 ## Demo Video
 
-Check out my [LinkedIn profile](https://www.linkedin.com/in/madhumiga-vijayakumar-b51aa4255/) for a demo video of this project.
+Check out my [LinkedIn profile](https://www.linkedin.com/feed/update/urn:li:activity:7218499977038192640/) for a demo video of this project.
 
 Happy Coding!😊👨‍💻👩‍💻
